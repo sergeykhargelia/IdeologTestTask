@@ -44,6 +44,6 @@ fun main(args: Array<String>) {
     } catch (e: IllegalArgumentException) {
         println(e.toString())
     } catch (e: FileNotFoundException) {
-        println("Cannot find a file $e")
+        println("Cannot find the file $e")
     }
 }
