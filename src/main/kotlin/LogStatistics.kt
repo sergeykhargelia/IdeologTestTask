@@ -16,29 +16,29 @@ fun main(args: Array<String>) {
         if (!File(inputFileName).exists()) {
             throw FileNotFoundException(inputFileName)
         }
-        val data = File(inputFileName).readLines()
 
-
-        val logsByThread = data.groupBy {
-            it.split(Regex("\\s+")).getOrElse(threadNamePosition) {
-                throw IllegalArgumentException("Wrong structure of log file")
+        File(inputFileName).useLines { data ->
+            val logsByThread = data.groupBy {
+                it.split(Regex("\\s+")).getOrElse(threadNamePosition) {
+                    throw IllegalArgumentException("Wrong structure of log file")
+                }
             }
-        }
-        val mostFrequentThreads = logsByThread.toList().map { (thread, logs) ->
-            Pair (thread, logs.size)
-        }.sortedByDescending { (_, count) -> count }.take(mostFrequentCount)
 
+            val mostFrequentThreads = logsByThread.toList().map { (thread, logs) ->
+                Pair (thread, logs.size)
+            }.sortedByDescending { (_, count) -> count }.take(mostFrequentCount)
 
-        if (args.size >= 2) {
-            val outputFileName = args[1]
-            val writer = PrintWriter(outputFileName)
-            mostFrequentThreads.forEach { (threadName, actionsCount) ->
-                writer.append("$threadName $actionsCount\n")
-            }
-            writer.close()
-        } else {
-            mostFrequentThreads.forEach { (threadName, actionsCount) ->
-                println("$threadName $actionsCount")
+            if (args.size >= 2) {
+                val outputFileName = args[1]
+                val writer = PrintWriter(outputFileName)
+                mostFrequentThreads.forEach { (threadName, actionsCount) ->
+                    writer.append("$threadName $actionsCount\n")
+                }
+                writer.close()
+            } else {
+                mostFrequentThreads.forEach { (threadName, actionsCount) ->
+                    println("$threadName $actionsCount")
+                }
             }
         }
     } catch (e: IllegalArgumentException) {
